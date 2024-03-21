@@ -1,39 +1,155 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+import telepot
+import time
 
-name: Python application
+# Token do seu bot do Telegram e ID do grupo
+bot_token = '6640349473:AAGAwbWw5MKZeHpoKcm2BUS9rM5wl1wNnpo'  # Substitua pelo token real do seu bot
+group_chat_id = '1967378125'  # Substitua pelo ID do seu grupo Telegram
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# Inicialize o bot do Telegram
+bot = telepot.Bot(bot_token)
 
-permissions:
-  contents: read
+# Modelos de sinais
+modelos_sinais = [
+    """
+🤑 NOVA OPORTUNIDADE!
 
-jobs:
-  build:
+🎮 JOGO: 🐭 Fortune Mouse 🐭
+⚡️ 6X - Turbo
+🔃 Alternando
+🎰 6X - Normal
+⏰ Validade: 3 minutos
 
-    runs-on: ubuntu-latest
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        pytest
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐯 Fortune Tiger 🐯
+⚡️ 5X - Turbo
+🔃 Alternando
+🎰 7X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐭 Fortune Mouse 🐭
+⚡️ 3X - Turbo
+🔃 Alternando
+🎰 10X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐯 Fortune Tiger 🐯
+⚡️ 6X - Turbo
+🔃 Alternando
+🎰 8X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐭 Fortune Mouse 🐭
+⚡️ 9X - Turbo
+🔃 Alternando
+🎰 7X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐯 Fortune Tiger 🐯
+⚡️ 7X - Turbo
+🔃 Alternando
+🎰 4X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐭 Fortune Mouse 🐭
+⚡️ 4X - Turbo
+🔃 Alternando
+🎰 11X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+""",
+    """
+🤑 NOVA OPORTUNIDADE!
+
+🎮 JOGO: 🐯 Fortune Tiger 🐯
+⚡️ 9X - Turbo
+🔃 Alternando
+🎰 6X - Normal
+⏰ Validade: 3 minutos
+
+🚨 FUNCIONA APENAS NESTA PLATAFORMA ⬇️
+🎰 𝗣𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮: https://abrir.link/Ggggame
+⚠️ NÃO TENTE EM OUTRO SITE! ⬆️
+
+👇 APLICATIVO DOS SLOTS 👇
+https://abrir.link/Pirata-Script-Sinais
+"""
+]
+
+while True:
+    try:
+        # Intercale entre os modelos de sinais
+        for modelo in modelos_sinais:
+            # Envie o sinal para o grupo do Telegram
+            bot.sendMessage(group_chat_id, modelo)
+
+            # Aguarde 1 minuto antes de enviar o próximo sinal
+            time.sleep(240)  # 240 segundos = 4 minuto
+
+    except Exception as e:
+        # Lida com exceções, se ocorrerem
+        print(f"Erro: {str(e)}")
